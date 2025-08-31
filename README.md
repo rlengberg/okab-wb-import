@@ -23,5 +23,6 @@
   - process_okab_waybills.exe
 
  ### Stand-alone Executable
-> Install pyInstaller with pip in your virtual environment
-> run pyinstaller "./process_okab_waybills.py" -F
+> Install pyInstaller with pip in your virtual environment<br/>
+> Run pyinstaller "./process_okab_waybills.py" -F<br/>
+> Executable available in ./dist
