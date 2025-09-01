@@ -1,6 +1,6 @@
 csv/*
 pdf/*
-
+activate_venv.ps1
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

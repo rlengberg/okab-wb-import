@@ -90,6 +90,7 @@ for file in files:
 						"net_wt": l[5],
 					}
 					i += 1
+					
 
 				# gather all consumed packages
 				if len(l) == 6 and l[3].isnumeric() and len(l[3]) == 14:
@@ -102,7 +103,12 @@ for file in files:
 					}
 					i += 1
 
-	if len(data["packages"]) > 0 and len(data["consumed"]) > 0 and len(data["header"]) == 3:
+	if len(data["packages"]) > 0 and len(data["header"]) == 3:
+		if len(data["consumed"]) < 1:
+			print(f"\t... consumed packages not extracted! Check source list of file {src_path+'/'+file}!")
+		else:
+			print(f"\t... {len(data["packages"])} packages to create.")
+			print(f"\t... {len(data["consumed"])} reels to be consumed.")
 
 		with open(out_path+str(data["header"]["order_no"])+"-"+str(data["header"]["order_pos"])+".csv", 'w', encoding='utf-8', newline='') as f:
 			csvw = csv.writer(f, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
