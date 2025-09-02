@@ -1,6 +1,8 @@
 csv/*
 pdf/*
+build/*
 activate_venv.ps1
+process_okab_waybills.spec
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -23,17 +23,17 @@ for file in files:
 	i = 1
 
 	if (file[-4:] != '.pdf'):
-		print(f"\t{file} needs to have .pdf extension. Skipping...")
-		#continue # skip current iteration and jump to next
+		print(f"\t{file} needs to have .pdf extension. Skipping file...")
+		continue # skip current iteration and jump to next
 
 	# This string is expected on the first page of the PDF.
 	# Jump to next iteration otherwise.
 	if document.is_pdf and "OKAB Sweden AB" in document.get_page_text(0):
 		print(f"\tProcessing {file}")
 	else:
-		print(f"\t{file} is not matching the expected PDF structure. Skipping...")
+		print(f"\t{file} is not matching the expected PDF structure. Skipping file...")
 		print(f"\tIf this is a waybill from OKAB, please verify that it is not a printed & scanned version.")
-		#continue #skip current iteration and jump to next
+		continue #skip current iteration and jump to next
 
 	for page in document:
 		tabs = page.find_tables()
@@ -81,7 +81,7 @@ for file in files:
 				# gather all new packages
 				if len(l) == 7 and l[0].isnumeric() and len(l[0]) == 14:
 					if len(data["packages"]) < 1:
-						print(f"\t...found packages to create.")
+						print(f"\t...found packages to be created.")
 					data["packages"][i] = {
 						"type": "P",
 						"id": l[0],
@@ -95,7 +95,7 @@ for file in files:
 				# gather all consumed packages
 				if len(l) == 6 and l[3].isnumeric() and len(l[3]) == 14:
 					if len(data["consumed"]) < 1:
-						print(f"\t...found source material to consume.")
+						print(f"\t...found source material to be consumed.")
 					data["consumed"][i] = {
 						"type": "I",
 						"id": l[3],
@@ -105,10 +105,12 @@ for file in files:
 
 	if len(data["packages"]) > 0 and len(data["header"]) == 3:
 		if len(data["consumed"]) < 1:
-			print(f"\t... consumed packages not extracted! Check source list of file {src_path+'/'+file}!")
+			print(f"\t...WARNING! No source material found. Check waybill!")
+			print(f"\t\tSource material used for this order will not be")
+			print(f"\t\tautomatically consumed when importing this file!")
 		else:
-			print(f"\t... {len(data["packages"])} packages to create.")
-			print(f"\t... {len(data["consumed"])} reels to be consumed.")
+			print(f"\t...found {len(data["packages"])} packages to be created.")
+			print(f"\t...found {len(data["consumed"])} reels to be consumed.")
 
 		with open(out_path+str(data["header"]["order_no"])+"-"+str(data["header"]["order_pos"])+".csv", 'w', encoding='utf-8', newline='') as f:
 			csvw = csv.writer(f, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -136,7 +138,10 @@ for file in files:
 
 				])
 
-		print(f"\t...finished processing {file}, output sent to {out_path[2:]}{file_name}.csv")
+		print(f"\tProcessed {file}, output sent to {out_path[2:]}{file_name}.csv")
+	else:
+		print(f"\t... no header data and/or data for packages to be created.")
+
 	print(f"\n")
 
 print_developed_by()
